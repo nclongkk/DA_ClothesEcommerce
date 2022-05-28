@@ -6,7 +6,7 @@ const app = express();
 app.use('/auth', require('./auth'));
 app.use('/users', require('./users'));
 app.use('/address', require('./address'));
-// app.use('/shops', require('./shops'));
+app.use('/shops', require('./shops'));
 // app.use('/shipping-units', require('./shippingUnits'));
 // app.use('/products', require('./products'));
 // app.use('/feedbacks', require('./feedbacks'));
