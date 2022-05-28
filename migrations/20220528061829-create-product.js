@@ -37,6 +37,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         defaultValue: 0,
       },
+      totalVersions: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+      },
       avgRatings: {
         type: Sequelize.FLOAT,
         defaultValue: 0,

@@ -7,5 +7,8 @@
 	"error.email_already_registered": "Email already registered",
 	"error.expired_or_didnt_exist": "Secret key expired or didn't exist",
 	"\"name\" is required": "\"name\" is required",
-	"\"phone\" is required": "\"phone\" is required"
+	"\"phone\" is required": "\"phone\" is required",
+	"Unknown column 'totalVersions' in 'field list'": "Unknown column 'totalVersions' in 'field list'",
+	"Unknown column 'Product.origin' in 'field list'": "Unknown column 'Product.origin' in 'field list'",
+	"Unknown column 'productVersions.name' in 'field list'": "Unknown column 'productVersions.name' in 'field list'"
 }

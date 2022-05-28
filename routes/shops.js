@@ -18,7 +18,7 @@ const { authenticate, authorize } = require('../middlewares/auth');
 const shopDetail = require('../validators/shopInfo.validator');
 const paginate = require('../validators/paginate.validator');
 const promotionDto = require('../validators/promotionDto.validator');
-// const productRoutes = require('./products');
+const productRoutes = require('./products');
 
 const router = express.Router();
 
@@ -33,7 +33,7 @@ router
   .put(authenticate, updateShopInformation)
   .delete(authenticate, deleteShop);
 router.route('/:shopId/ratings').post(authenticate, addShopRating);
-// router.use('/:shopId/products', productRoutes);
+router.use('/:shopId/products', productRoutes);
 router
   .route('/:shopId/promotions')
   .get(authenticate, getUnexpiredPromotions)
