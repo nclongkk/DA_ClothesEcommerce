@@ -8,13 +8,17 @@ module.exports = (sequelize, DataTypes) => {
         as: 'product',
         onDelete: 'CASCADE',
       });
+      ProductVersion.hasMany(models.CartItem, {
+        foreignKey: 'productVersionId',
+        as: 'cartItems',
+      });
     }
   }
   ProductVersion.init(
     {
       productId: DataTypes.INTEGER,
-      color: DataTypes.STRING,
       size: DataTypes.STRING,
+      color: DataTypes.STRING,
       quantity: DataTypes.INTEGER,
       price: DataTypes.FLOAT,
       image: DataTypes.STRING,
