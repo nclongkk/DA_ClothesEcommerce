@@ -12,7 +12,7 @@ app.use('/products', require('./products'));
 // app.use('/feedbacks', require('./feedbacks'));
 app.use('/categories', require('./categories'));
 // app.use('/cart-items', require('./cartItems'));
-// app.use('/wishlist', require('./wishlist'));
+app.use('/wishlist', require('./wishlist'));
 // app.use('/orders', require('./orders'));
 // app.use('/dashboard', require('./dashboard'));
 // app.use('/blogs', require('./blogs'));
