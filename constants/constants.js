@@ -23,3 +23,16 @@ exports.COLORS = {
   BROWN: 'Nâu',
   GRAY: 'Xám',
 };
+
+exports.ORDER_STATUS = {
+  PENDING: 'pending',
+  PROCESSING: 'processing',
+  SHIPPED: 'shipped',
+  DELIVERED: 'delivered',
+  CANCELED: 'canceled',
+};
+
+exports.TRANSACTION_STATUS = {
+  PENDING: 'pending',
+  TRANSFERRED: 'transferred',
+};

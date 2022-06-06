@@ -4,9 +4,9 @@ const {
   User,
   Product,
   ProductVersion,
-  //   Feedback,
-  //   Order,
-  //   OrderItem,
+  // Feedback,
+  Order,
+  OrderItem,
   ProductImage,
   WishlistItem,
   Shop,
@@ -16,7 +16,7 @@ const {
 const { Op, and, or, where } = require('sequelize');
 const customError = require('../utils/customError');
 const { response } = require('../utils/response');
-// const { ORDER_STATUS } = require('../utils/constants');
+const { ORDER_STATUS } = require('../constants/constants');
 const { required } = require('joi');
 
 /**
@@ -26,7 +26,17 @@ const { required } = require('joi');
 exports.addProduct = async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
-    let { name, description, categoryId, images, versions } = req.body;
+    let {
+      name,
+      description,
+      categoryId,
+      origin,
+      images,
+      size,
+      weight,
+      material,
+      versions,
+    } = req.body;
     let minPrice = (maxPrice = versions[0].price);
     versions.forEach((version) => {
       minPrice = minPrice > version.price ? version.price : minPrice;
@@ -38,6 +48,10 @@ exports.addProduct = async (req, res, next) => {
         description,
         shopId: req.user.shop.id,
         categoryId,
+        origin,
+        size,
+        weight,
+        material,
         totalVersions: versions.length,
         minPrice,
         maxPrice,
@@ -86,7 +100,17 @@ exports.updateProduct = async (req, res, next) => {
       { transaction: t }
     );
     if (result === 1) {
-      let { name, description, categoryId, images, versions } = req.body;
+      let {
+        name,
+        description,
+        categoryId,
+        origin,
+        images,
+        size,
+        weight,
+        material,
+        versions,
+      } = req.body;
       let minPrice = (maxPrice = versions[0].price);
       versions.forEach((version) => {
         minPrice = minPrice > version.price ? version.price : minPrice;
@@ -99,6 +123,10 @@ exports.updateProduct = async (req, res, next) => {
           description,
           shopId,
           categoryId,
+          origin,
+          size,
+          weight,
+          material,
           totalVersions: versions.length,
           minPrice,
           maxPrice,
@@ -161,7 +189,7 @@ exports.getProduct = async (req, res, next) => {
         {
           model: ProductVersion,
           as: 'productVersions',
-          attributes: ['id', 'size', 'color', 'quantity', 'price', 'image'],
+          attributes: ['id', 'name', 'quantity', 'price', 'image'],
         },
         {
           model: Shop,
@@ -183,46 +211,51 @@ exports.getProduct = async (req, res, next) => {
         'id',
         'name',
         'description',
+        'origin',
         'soldQuantity',
+        'brand',
+        'material',
+        'size',
+        'weight',
         'avgRatings',
         'totalRatings',
       ],
     });
-    // let orderItem;
-    // if (req.headers.authorization) {
-    //   const token = req.headers.authorization.split('Bearer ')[1];
-    //   const userId = jwt.verify(token, process.env.JWT_SECRET).id;
-    //   orderItem = await OrderItem.findOne({
-    //     include: [
-    //       {
-    //         model: Order,
-    //         as: 'order',
-    //         select: ['id'],
-    //         where: { status: ORDER_STATUS.DELIVERED, userId },
-    //         required: true,
-    //       },
-    //       {
-    //         model: ProductVersion,
-    //         as: 'productVersion',
-    //         select: ['id'],
-    //         include: [
-    //           {
-    //             model: Product,
-    //             as: 'product',
-    //             where: { id: productId },
-    //             select: ['id'],
-    //             required: true,
-    //           },
-    //         ],
-    //         required: true,
-    //       },
-    //     ],
-    //   });
-    // }
-    // if (orderItem) {
-    //   product = JSON.parse(JSON.stringify(product));
-    //   product.wasOrdered = true;
-    // }
+    let orderItem;
+    if (req.headers.authorization) {
+      const token = req.headers.authorization.split('Bearer ')[1];
+      const userId = jwt.verify(token, process.env.JWT_SECRET).id;
+      orderItem = await OrderItem.findOne({
+        include: [
+          {
+            model: Order,
+            as: 'order',
+            select: ['id'],
+            where: { status: ORDER_STATUS.DELIVERED, userId },
+            required: true,
+          },
+          {
+            model: ProductVersion,
+            as: 'productVersion',
+            select: ['id'],
+            include: [
+              {
+                model: Product,
+                as: 'product',
+                where: { id: productId },
+                select: ['id'],
+                required: true,
+              },
+            ],
+            required: true,
+          },
+        ],
+      });
+    }
+    if (orderItem) {
+      product = JSON.parse(JSON.stringify(product));
+      product.wasOrdered = true;
+    }
 
     return response(product, httpStatus.OK, res);
   } catch (error) {
@@ -421,55 +454,55 @@ exports.getBestSellingProducts = async (req, res, next) => {
  * @desc    get purchased products
  * @route   GET /api/v1/products/purchased
  */
-// exports.getPurchasedProducts = async (req, res, next) => {
-//   try {
-//     const { categoryId = { [Op.not]: null } } = req.query;
-//     let products = await OrderItem.findAll({
-//       order: [['createdAt', 'DESC']],
-//       include: [
-//         {
-//           model: Order,
-//           as: 'order',
-//           where: { userId: req.user.id, status: ORDER_STATUS.DELIVERED },
-//           required: true,
-//         },
-//         {
-//           model: ProductVersion,
-//           as: 'productVersion',
-//           attributes: ['id', 'productId'],
-//           include: [
-//             {
-//               model: Product,
-//               where: { categoryId },
-//               as: 'product',
-//               attributes: ['id', 'name', 'categoryId'],
-//               include: [
-//                 {
-//                   model: ProductImage,
-//                   as: 'images',
-//                   attributes: ['id', 'image'],
-//                   limit: 1,
-//                 },
-//               ],
-//               required: true,
-//             },
-//           ],
-//           required: true,
-//         },
-//       ],
-//       distinct: true,
-//     });
+exports.getPurchasedProducts = async (req, res, next) => {
+  try {
+    const { categoryId = { [Op.not]: null } } = req.query;
+    let products = await OrderItem.findAll({
+      order: [['createdAt', 'DESC']],
+      include: [
+        {
+          model: Order,
+          as: 'order',
+          where: { userId: req.user.id, status: ORDER_STATUS.DELIVERED },
+          required: true,
+        },
+        {
+          model: ProductVersion,
+          as: 'productVersion',
+          attributes: ['id', 'productId'],
+          include: [
+            {
+              model: Product,
+              where: { categoryId },
+              as: 'product',
+              attributes: ['id', 'name', 'categoryId'],
+              include: [
+                {
+                  model: ProductImage,
+                  as: 'images',
+                  attributes: ['id', 'image'],
+                  limit: 1,
+                },
+              ],
+              required: true,
+            },
+          ],
+          required: true,
+        },
+      ],
+      distinct: true,
+    });
 
-//     products = JSON.parse(JSON.stringify(products));
-//     products = products.map((product) => product.productVersion.product);
+    products = JSON.parse(JSON.stringify(products));
+    products = products.map((product) => product.productVersion.product);
 
-//     // remove duplicates products
-//     products = products.filter(
-//       (product, index) =>
-//         products.findIndex((p) => p.id === product.id) === index
-//     );
-//     return response(products, httpStatus.OK, res);
-//   } catch (error) {
-//     return next(error);
-//   }
-// };
+    // remove duplicates products
+    products = products.filter(
+      (product, index) =>
+        products.findIndex((p) => p.id === product.id) === index
+    );
+    return response(products, httpStatus.OK, res);
+  } catch (error) {
+    return next(error);
+  }
+};
