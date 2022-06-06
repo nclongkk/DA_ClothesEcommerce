@@ -11,7 +11,7 @@ const {
 const { authenticate, authorize } = require('../middlewares/auth');
 const paginate = require('../validators/paginate.validator');
 const updateOrderStatus = require('../validators/updateOrderStatus.validator');
-const createOrder = require('../validators/createOrder.validator');
+const createOrder = require('../validators/createorder.validator');
 const router = express.Router({ mergeParams: true });
 
 router
