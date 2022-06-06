@@ -18,7 +18,6 @@ class CreateOrder extends CoreValidator {
         senderPayPalMail: Joi.string().email(),
       }),
     };
-
     super(schema);
   }
 }
