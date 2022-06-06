@@ -303,18 +303,18 @@ exports.getOrderById = async (req, res, next) => {
               ],
               attributes: ['id', 'size', 'color', 'price', 'image'],
             },
-            {
-              model: Feedback,
-              as: 'feedback',
-              attributes: ['id', 'content', 'rating', 'createdAt'],
-              include: [
-                {
-                  model: FeedbackImage,
-                  as: 'feedbackImages',
-                  attributes: ['id', 'image'],
-                },
-              ],
-            },
+            // {
+            //   model: Feedback,
+            //   as: 'feedback',
+            //   attributes: ['id', 'content', 'rating', 'createdAt'],
+            //   include: [
+            //     {
+            //       model: FeedbackImage,
+            //       as: 'feedbackImages',
+            //       attributes: ['id', 'image'],
+            //     },
+            //   ],
+            // },
           ],
           attributes: ['id', 'quantity'],
         },
