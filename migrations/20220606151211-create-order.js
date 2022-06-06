@@ -57,6 +57,9 @@ module.exports = {
       serviceFeePercentage: {
         type: Sequelize.FLOAT,
       },
+      isPurchased: {
+        type: Sequelize.BOOLEAN,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

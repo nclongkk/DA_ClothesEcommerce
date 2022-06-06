@@ -1,9 +1,11 @@
 {
-  "error.password_does_not_match": "Your password does not match",
-  "error.not_authorize": "Not authorize",
-  "error.not_registered": "You are not registered",
-  "error.code_incorrect": "Secret code is incorrect",
-  "error.not_found": "Can not find any result",
-  "error.email_already_registered": "Email already registered",
-  "error.expired_or_didnt_exist": "Secret key expired or didn't exist"
+	"error.password_does_not_match": "Your password does not match",
+	"error.not_authorize": "Not authorize",
+	"error.not_registered": "You are not registered",
+	"error.code_incorrect": "Secret code is incorrect",
+	"error.not_found": "Can not find any result",
+	"error.email_already_registered": "Email already registered",
+	"error.expired_or_didnt_exist": "Secret key expired or didn't exist",
+	"Unknown column 'isPurchased' in 'field list'": "Unknown column 'isPurchased' in 'field list'",
+	"\"isPurchased\" is required": "\"isPurchased\" is required"
 }
