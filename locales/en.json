@@ -7,5 +7,6 @@
 	"error.email_already_registered": "Email already registered",
 	"error.expired_or_didnt_exist": "Secret key expired or didn't exist",
 	"Unknown column 'isPurchased' in 'field list'": "Unknown column 'isPurchased' in 'field list'",
-	"\"isPurchased\" is required": "\"isPurchased\" is required"
+	"\"isPurchased\" is required": "\"isPurchased\" is required",
+	"Unknown column 'Product.size' in 'field list'": "Unknown column 'Product.size' in 'field list'"
 }

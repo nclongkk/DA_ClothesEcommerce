@@ -26,14 +26,7 @@ const { required } = require('joi');
 exports.addProduct = async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
-    let {
-      name,
-      description,
-      categoryId,
-      images,
-      size,
-      versions,
-    } = req.body;
+    let { name, description, categoryId, images, size, versions } = req.body;
     let minPrice = (maxPrice = versions[0].price);
     versions.forEach((version) => {
       minPrice = minPrice > version.price ? version.price : minPrice;
@@ -94,14 +87,7 @@ exports.updateProduct = async (req, res, next) => {
       { transaction: t }
     );
     if (result === 1) {
-      let {
-        name,
-        description,
-        categoryId,
-        images,
-        size,
-        versions,
-      } = req.body;
+      let { name, description, categoryId, images, size, versions } = req.body;
       let minPrice = (maxPrice = versions[0].price);
       versions.forEach((version) => {
         minPrice = minPrice > version.price ? version.price : minPrice;
@@ -177,7 +163,7 @@ exports.getProduct = async (req, res, next) => {
         {
           model: ProductVersion,
           as: 'productVersions',
-          attributes: ['id', 'name', 'quantity', 'price', 'image'],
+          attributes: ['id', 'size', 'color', 'quantity', 'price', 'image'],
         },
         {
           model: Shop,
@@ -200,7 +186,6 @@ exports.getProduct = async (req, res, next) => {
         'name',
         'description',
         'soldQuantity',
-        'size',
         'avgRatings',
         'totalRatings',
       ],
