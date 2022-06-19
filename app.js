@@ -3,8 +3,10 @@ const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const i18n = require('i18n');
 const cors = require('cors');
+const socketio = require('socket.io');
 const i18nConfig = require('./config/i18n.config');
 const routes = require('./routes/index');
+const socketHandler = require('./utils/socketHandler');
 const app = express();
 
 //load env var
@@ -27,4 +29,7 @@ app.use(cookieParser());
 app.use('/api/v1', routes);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, console.log(`Server running on port ${PORT}`));
+const server = app.listen(PORT, console.log(`Server running on port ${PORT}`));
+const io = socketio(server);
+global._emitter = io;
+socketHandler(io);

@@ -14,6 +14,7 @@ const {
   Order,
   Promotion,
   OrderItem,
+  OrderNotification,
   Transaction,
   //   Feedback,
   //   FeedbackImage,
@@ -487,6 +488,16 @@ exports.updateOrderStatusForShop = async (req, res, next) => {
     }
     await order.update({ status });
     await t.commit();
+
+    OrderNotification.create({
+      orderId: order.id,
+      receiverUserId: order.userId,
+      message: `Your order ${order.id} is ${order.status}`,
+    })
+      .then(() => {
+        _emitter.sockets.in(order.userId).emit('orderStatusChanging', order);
+      })
+      .catch((error) => console.log(error));
     return response(order, httpStatus.OK, res);
   } catch (error) {
     await t.rollback();

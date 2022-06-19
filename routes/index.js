@@ -14,6 +14,7 @@ app.use('/categories', require('./categories'));
 app.use('/cart-items', require('./cartItems'));
 app.use('/wishlist', require('./wishlist'));
 app.use('/orders', require('./orders'));
+app.use('/notifications', require('./notifications'));
 // app.use('/dashboard', require('./dashboard'));
 // app.use('/admin', require('./admin'));
 
