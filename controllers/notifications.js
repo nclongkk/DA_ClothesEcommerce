@@ -77,28 +77,27 @@ exports.updateNotificationReadStatus = async (req, res, next) => {
 exports.deleteNotification = async (req, res, next) => {
   try {
     const { notificationId } = req.params;
-    const notification = await OrderNotification.destroy({
-      where: {
-        id: notificationId,
-        receiverUserId: req.user.id,
-      },
-    });
+    emitterNotificationEvent(req.user.id, 'delete', { notificationId });
+    // const notification = await OrderNotification.destroy({
+    //   where: {
+    //     id: notificationId,
+    //     receiverUserId: req.user.id,
+    //   },
+    // });
 
-    if (!notification) {
-      throw new customError(
-        'error.notification_not_found',
-        httpStatus.NOT_FOUND
-      );
-    }
+    // if (!notification) {
+    //   throw new customError(
+    //     'error.notification_not_found',
+    //     httpStatus.NOT_FOUND
+    //   );
+    // }
 
-    emitterNotificationEvent('delete', { notificationId });
-
-    return response({ notification }, httpStatus.OK, res);
+    return response({ success: true }, httpStatus.OK, res);
   } catch (error) {
     next(error);
   }
 };
 
-const emitterNotificationEvent = (status, payload) => {
-  _emitter.sockets.in(order.userId).emit('notification', { status, payload });
+const emitterNotificationEvent = (receiverUserId, status, payload) => {
+  _emitter.sockets.in(receiverUserId).emit('notification', { status, payload });
 };

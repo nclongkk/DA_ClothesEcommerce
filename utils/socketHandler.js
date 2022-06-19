@@ -19,6 +19,9 @@ const socketHandler = (io) => {
     }
   }).on('connection', (socket) => {
     socket.join(socket.user.id);
+
+    //emit connected event
+    // socket.emit('connected', { msg: 'connected' });
   });
 };
 

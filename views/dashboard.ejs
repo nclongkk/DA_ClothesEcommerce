@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <br />
+    <input type="text" id="jwt" placeholder="fill your jsonwebtoken" />
+    <button id="btnLogin">Login</button>
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/dashboard.js"></script>
+
+    <script>
+      $('#btnLogin').click(() => {
+        console.log('login');
+        let socket;
+        const token = $('#jwt').val();
+        console.log(socket);
+        if (!socket) {
+          socket = io.connect('http://192.168.153.238:3000', {
+            transports: ['websocket'],
+            auth: { token },
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -25,8 +25,15 @@ app.use(express.json());
 // Cookie parser
 app.use(cookieParser());
 
+//ejs
+app.set('view engine', 'ejs');
+app.set('views', './views');
+
+//public css, js
+app.use(express.static('public'));
 //routes
 app.use('/api/v1', routes);
+app.get('/', (req, res) => res.render('dashboard'));
 
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, console.log(`Server running on port ${PORT}`));
