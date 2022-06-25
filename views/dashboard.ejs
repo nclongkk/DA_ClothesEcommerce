@@ -25,7 +25,8 @@
         const token = $('#jwt').val();
         console.log(socket);
         if (!socket) {
-          socket = io.connect('http://192.168.153.238:3000', {
+          socket = io.connect('https://eclothes-pfiev3.herokuapp.com', {
+            // socket = io.connect('http://192.168.153.238:3000', {
             transports: ['websocket'],
             auth: { token },
           });
