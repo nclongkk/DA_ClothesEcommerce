@@ -29,6 +29,10 @@
             transports: ['websocket'],
             auth: { token },
           });
+
+          socket.on('notification', (data) => {
+            console.log(data);
+          });
         }
       });
     </script>
