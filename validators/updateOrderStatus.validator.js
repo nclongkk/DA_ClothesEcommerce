@@ -7,7 +7,11 @@ class UpdateOrderStatus extends CoreValidator {
       body: Joi.object({
         status: Joi.string()
           .trim()
-          .valid(ORDER_STATUS.PROCESSING, ORDER_STATUS.SHIPPED)
+          .valid(
+            ORDER_STATUS.PROCESSING,
+            ORDER_STATUS.SHIPPED,
+            ORDER_STATUS.DELIVERED
+          )
           .required(),
       }),
     };
