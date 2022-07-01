@@ -13,10 +13,10 @@ module.exports = (sequelize, DataTypes) => {
         as: 'productVersion',
         onDelete: 'CASCADE',
       });
-      // OrderItem.hasOne(models.Feedback, {
-      //   foreignKey: 'orderItemId',
-      //   as: 'feedback',
-      // });
+      OrderItem.hasOne(models.Feedback, {
+        foreignKey: 'orderItemId',
+        as: 'feedback',
+      });
     }
   }
   OrderItem.init(

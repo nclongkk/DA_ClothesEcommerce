@@ -1,14 +1,15 @@
 {
-	"error.password_does_not_match": "Your password does not match",
-	"error.not_authorize": "Not authorize",
-	"error.not_registered": "You are not registered",
-	"error.code_incorrect": "Secret code is incorrect",
-	"error.not_found": "Can not find any result",
-	"error.email_already_registered": "Email already registered",
-	"error.expired_or_didnt_exist": "Secret key expired or didn't exist",
-	"error.Order_not_found": "Not found any valid order",
-	"error.Shop_not_have_order": "Shop not have any order like this",
-	"User 'udoenecwor3myhki' has exceeded the 'max_user_connections' resource (current value: 5)": "System reached the maximum number of connections to the database. Please try again later.",
-	"error.notification_not_found": "Notification of user not found",
-	"order is not defined": "order is not defined"
+  "error.password_does_not_match": "Your password does not match",
+  "error.not_authorize": "Not authorize",
+  "error.not_registered": "You are not registered",
+  "error.code_incorrect": "Secret code is incorrect",
+  "error.not_found": "Can not find any result",
+  "error.email_already_registered": "Email already registered",
+  "error.expired_or_didnt_exist": "Secret key expired or didn't exist",
+  "error.Order_not_found": "Not found any valid order",
+  "error.Shop_not_have_order": "Shop not have any order like this",
+  "User 'udoenecwor3myhki' has exceeded the 'max_user_connections' resource (current value: 5)": "System reached the maximum number of connections to the database. Please try again later.",
+  "error.notification_not_found": "Notification of user not found",
+  "order is not defined": "order is not defined",
+  "error.order_item_does_not_exist": "Order item does not exist"
 }
