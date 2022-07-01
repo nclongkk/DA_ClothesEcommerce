@@ -387,7 +387,7 @@ exports.updateOrderStatusForShop = async (req, res, next) => {
             {
               model: ProductVersion,
               as: 'productVersion',
-              attributes: ['id', 'productId'],
+              attributes: ['id', 'image', 'productId'],
             },
           ],
         },
@@ -494,8 +494,13 @@ exports.updateOrderStatusForShop = async (req, res, next) => {
       receiverUserId: order.userId,
       message: `Your order ${order.id} is ${order.status}`,
     })
-      .then(() => {
-        _emitter.sockets.in(order.userId).emit('orderStatusChanging', order);
+      .then(async (data) => {
+        const count = await OrderNotification.count({
+          receiverUserId: order.userId,
+        });
+        _emitter.sockets
+          .in(order.userId)
+          .emit('orderStatusChanging', { order, notificaton: data, count });
       })
       .catch((error) => console.log(error));
     return response(order, httpStatus.OK, res);
@@ -568,7 +573,7 @@ exports.cancelOrder = async (req, res, next) => {
             {
               model: ProductVersion,
               as: 'productVersion',
-              attributes: ['id', 'productId'],
+              attributes: ['id', 'image', 'productId'],
             },
           ],
         },
@@ -645,8 +650,13 @@ exports.cancelOrder = async (req, res, next) => {
       receiverUserId: order.userId,
       message: `Your order ${order.id} is ${order.status}`,
     })
-      .then(() => {
-        _emitter.sockets.in(order.userId).emit('orderStatusChanging', order);
+      .then(async (data) => {
+        const count = await OrderNotification.count({
+          receiverUserId: order.userId,
+        });
+        _emitter.sockets
+          .in(order.userId)
+          .emit('orderStatusChanging', { order, notificaton: data, count });
       })
       .catch((error) => console.log(error));
 
