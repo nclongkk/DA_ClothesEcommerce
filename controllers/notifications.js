@@ -78,19 +78,19 @@ exports.deleteNotification = async (req, res, next) => {
   try {
     const { notificationId } = req.params;
     emitterNotificationEvent(req.user.id, 'delete', { notificationId });
-    // const notification = await OrderNotification.destroy({
-    //   where: {
-    //     id: notificationId,
-    //     receiverUserId: req.user.id,
-    //   },
-    // });
+    const notification = await OrderNotification.destroy({
+      where: {
+        id: notificationId,
+        receiverUserId: req.user.id,
+      },
+    });
 
-    // if (!notification) {
-    //   throw new customError(
-    //     'error.notification_not_found',
-    //     httpStatus.NOT_FOUND
-    //   );
-    // }
+    if (!notification) {
+      throw new customError(
+        'error.notification_not_found',
+        httpStatus.NOT_FOUND
+      );
+    }
 
     return response({ success: true }, httpStatus.OK, res);
   } catch (error) {
