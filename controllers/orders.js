@@ -560,6 +560,18 @@ exports.cancelOrder = async (req, res, next) => {
           as: 'shippingUnit',
           attributes: ['id', 'name', 'fee'],
         },
+        {
+          model: OrderItem,
+          as: 'orderItems',
+          attributes: ['id', 'quantity'],
+          include: [
+            {
+              model: ProductVersion,
+              as: 'productVersion',
+              attributes: ['id', 'productId'],
+            },
+          ],
+        },
       ],
     });
     if (!order) {
@@ -627,6 +639,17 @@ exports.cancelOrder = async (req, res, next) => {
     );
     await order.update({ status: ORDER_STATUS.CANCELED }, { transaction: t });
     await t.commit();
+
+    OrderNotification.create({
+      orderId: order.id,
+      receiverUserId: order.userId,
+      message: `Your order ${order.id} is ${order.status}`,
+    })
+      .then(() => {
+        _emitter.sockets.in(order.userId).emit('orderStatusChanging', order);
+      })
+      .catch((error) => console.log(error));
+
     return response(order, httpStatus.OK, res);
   } catch (error) {
     await t.rollback();
