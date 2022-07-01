@@ -16,8 +16,8 @@ const {
   OrderItem,
   OrderNotification,
   Transaction,
-  //   Feedback,
-  //   FeedbackImage,
+  Feedback,
+  FeedbackImage,
   sequelize,
 } = require('../models');
 const { Op, and, or, where } = require('sequelize');
@@ -41,7 +41,7 @@ exports.addOrder = async (req, res, next) => {
       promotionId,
       shippingUnitId,
       orderItems,
-      isPurchased = false,
+      isPurchased = true,
       senderPayPalMail,
     } = req.body;
 
@@ -146,7 +146,7 @@ exports.addOrder = async (req, res, next) => {
       });
 
       //update transaction collection
-      await Transaction.create(
+      const transaction = await Transaction.create(
         {
           orderId: order.id,
           userId,
@@ -304,18 +304,18 @@ exports.getOrderById = async (req, res, next) => {
               ],
               attributes: ['id', 'size', 'color', 'price', 'image'],
             },
-            // {
-            //   model: Feedback,
-            //   as: 'feedback',
-            //   attributes: ['id', 'content', 'rating', 'createdAt'],
-            //   include: [
-            //     {
-            //       model: FeedbackImage,
-            //       as: 'feedbackImages',
-            //       attributes: ['id', 'image'],
-            //     },
-            //   ],
-            // },
+            {
+              model: Feedback,
+              as: 'feedback',
+              attributes: ['id', 'content', 'rating', 'createdAt'],
+              include: [
+                {
+                  model: FeedbackImage,
+                  as: 'feedbackImages',
+                  attributes: ['id', 'image'],
+                },
+              ],
+            },
           ],
           attributes: ['id', 'quantity'],
         },
@@ -599,7 +599,7 @@ exports.cancelOrder = async (req, res, next) => {
           recipient_type: 'EMAIL',
           email_message: 'Your refund is completed',
           note: '',
-          sender_batch_id: `REFUND-${order.id}`,
+          sender_batch_id: `ECLOTHES-REFUND-${order.id}`,
           email_subject: 'Refund for your canceled order',
         },
         items: [
@@ -611,7 +611,7 @@ exports.cancelOrder = async (req, res, next) => {
             },
             receiver: transaction.senderPayPalMail,
             note: 'Thank you.',
-            sender_item_id: `REFUND-${order.id}`,
+            sender_item_id: `ECLOTHES-REFUND-${order.id}`,
           },
         ],
       });

@@ -8,7 +8,7 @@ class CreateOrder extends CoreValidator {
         shopId: Joi.number().integer().required(),
         promotionId: Joi.number().integer(),
         shippingUnitId: Joi.number().integer().required(),
-        isPurchased: Joi.boolean().default(false),
+        isPurchased: Joi.boolean().default(true),
         orderItems: Joi.array().items(
           Joi.object({
             productVersionId: Joi.number().integer().required(),

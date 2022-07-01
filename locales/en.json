@@ -10,6 +10,6 @@
   "error.Shop_not_have_order": "Shop not have any order like this",
   "User 'udoenecwor3myhki' has exceeded the 'max_user_connections' resource (current value: 5)": "System reached the maximum number of connections to the database. Please try again later.",
   "error.notification_not_found": "Notification of user not found",
-  "order is not defined": "order is not defined",
-  "error.order_item_does_not_exist": "Order item does not exist"
+  "error.order_item_does_not_exist": "Order item does not exist",
+  "error.Order_not_pending_or_processing": "error.Order_not_pending_or_processing"
 }
