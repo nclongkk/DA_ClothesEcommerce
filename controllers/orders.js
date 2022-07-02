@@ -445,14 +445,6 @@ exports.updateOrderStatusForShop = async (req, res, next) => {
         );
       });
 
-      await Transaction.create(
-        {
-          orderId: order.id,
-          shopId: order.shopId,
-          status: TRANSACTION_STATUS.TRANSFER,
-        },
-        { transaction: t }
-      );
       //creat transaction via paypal
       let environment = new paypal.core.SandboxEnvironment(
         process.env.PAYPAL_CLIENT_ID,
@@ -497,6 +489,11 @@ exports.updateOrderStatusForShop = async (req, res, next) => {
     }
     await order.update({ status });
     await t.commit();
+    await Transaction.create({
+      orderId: order.id,
+      shopId: order.shopId,
+      status: TRANSACTION_STATUS.TRANSFER,
+    });
 
     OrderNotification.create({
       orderId: order.id,
