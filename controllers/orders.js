@@ -445,6 +445,7 @@ exports.updateOrderStatusForShop = async (req, res, next) => {
         );
       });
 
+      await order.update({ status });
       //creat transaction via paypal
       let environment = new paypal.core.SandboxEnvironment(
         process.env.PAYPAL_CLIENT_ID,
@@ -487,7 +488,7 @@ exports.updateOrderStatusForShop = async (req, res, next) => {
         );
       }
     }
-    await order.update({ status });
+
     await t.commit();
     await Transaction.create({
       orderId: order.id,
@@ -503,7 +504,7 @@ exports.updateOrderStatusForShop = async (req, res, next) => {
       .then(async (data) => {
         _emitter.sockets
           .in(order.userId)
-          .emit('orderStatusChanging', { order, notificaton: data });
+          .emit('orderStatusChanging', { order, notification: data });
       })
       .catch((error) => console.log(error));
     return response(order, httpStatus.OK, res);
@@ -605,8 +606,17 @@ exports.cancelOrder = async (req, res, next) => {
         )
       );
     }
+
     const transaction = await Transaction.findOne({ where: { orderId } });
     if (transaction) {
+      await Transaction.create({
+        orderId: order.id,
+        userId: order.userId,
+        shopId: order.shopId,
+        status: TRANSACTION_STATUS.REFUND,
+        senderPayPalMail: transaction.senderPayPalMail,
+      });
+
       //creat transaction via paypal
       let environment = new paypal.core.SandboxEnvironment(
         process.env.PAYPAL_CLIENT_ID,
@@ -641,16 +651,6 @@ exports.cancelOrder = async (req, res, next) => {
       }
     }
 
-    await Transaction.create(
-      {
-        orderId: order.id,
-        userId,
-        shopId,
-        status: TRANSACTION_STATUS.REFUND,
-        senderPayPalMail,
-      },
-      { transaction: t }
-    );
     await order.update({ status: ORDER_STATUS.CANCELED }, { transaction: t });
     await t.commit();
 
