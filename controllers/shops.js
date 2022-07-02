@@ -36,7 +36,7 @@ exports.createNewShop = async (req, res, next) => {
   } catch (error) {
     if (error.message == 'Validation error') {
       return next(
-        new customError('error.Already_create_a_shop', httpStatus.BAD_REQUEST)
+        new customError('error.already_create_a_shop', httpStatus.BAD_REQUEST)
       );
     }
     return next(error);

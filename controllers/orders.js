@@ -482,10 +482,7 @@ exports.updateOrderStatusForShop = async (req, res, next) => {
       });
       let paypalResponse = await client.execute(request);
       if (paypalResponse.statusCode >= 400) {
-        throw new customError(
-          'error.Paypal_send_to_shop_error',
-          httpStatus.BAD_REQUEST
-        );
+        throw new customError('error.paypal_error', httpStatus.BAD_REQUEST);
       }
     }
 
@@ -585,13 +582,13 @@ exports.cancelOrder = async (req, res, next) => {
     });
     if (!order) {
       return next(
-        new customError('error.Order_not_found', httpStatus.NOT_FOUND)
+        new customError('error.order_not_found', httpStatus.NOT_FOUND)
       );
     }
     if (order.userId !== req.user.id) {
       if (order.shop.userId !== req.user.id) {
         return next(
-          new customError('error.Not_found_any_order', httpStatus.NOT_FOUND)
+          new customError('error.order_not_found', httpStatus.NOT_FOUND)
         );
       }
     }
@@ -647,7 +644,7 @@ exports.cancelOrder = async (req, res, next) => {
       });
       let paypalResponse = await client.execute(request);
       if (paypalResponse.statusCode >= 400) {
-        throw new customError('error.Paypal_error', httpStatus.BAD_REQUEST);
+        throw new customError('error.paypal_error', httpStatus.BAD_REQUEST);
       }
     }
 
