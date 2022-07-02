@@ -448,10 +448,8 @@ exports.updateOrderStatusForShop = async (req, res, next) => {
       await Transaction.create(
         {
           orderId: order.id,
-          userId,
-          shopId,
+          shopId: order.shopId,
           status: TRANSACTION_STATUS.TRANSFER,
-          senderPayPalMail,
         },
         { transaction: t }
       );
