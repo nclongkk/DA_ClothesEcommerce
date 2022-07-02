@@ -13,40 +13,53 @@ exports.getNotifications = async (req, res, next) => {
     const userId = req.user.id;
     const { page, limit } = req.query;
     const startIndex = (page - 1) * limit;
-    const { rows, count } = await OrderNotification.findAndCountAll({
-      where: {
-        receiverUserId: userId,
-      },
-      limit,
-      offset: startIndex,
-      include: [
-        {
-          model: Order,
-          as: 'order',
-          attributes: ['id', 'createdAt', 'amount'],
-          include: [
-            {
-              model: OrderItem,
-              as: 'orderItems',
-              attributes: ['id', 'productVersionId'],
-              include: [
-                {
-                  model: ProductVersion,
-                  as: 'productVersion',
-                  attributes: ['id', 'image'],
-                },
-              ],
-            },
-          ],
+    const [{ rows, count }, countUnread] = await Promise.all([
+      OrderNotification.findAndCountAll({
+        where: {
+          receiverUserId: userId,
         },
-      ],
+        limit,
+        offset: startIndex,
+        include: [
+          {
+            model: Order,
+            as: 'order',
+            attributes: ['id', 'createdAt', 'amount'],
+            include: [
+              {
+                model: OrderItem,
+                as: 'orderItems',
+                attributes: ['id', 'productVersionId'],
+                include: [
+                  {
+                    model: ProductVersion,
+                    as: 'productVersion',
+                    attributes: ['id', 'image'],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
 
-      order: [['createdAt', 'DESC']],
-      distinct: true,
-    });
+        order: [['createdAt', 'DESC']],
+        distinct: true,
+      }),
+      OrderNotification.count({
+        where: {
+          receiverUserId: userId,
+          isRead: false,
+        },
+      }),
+    ]);
 
     return response(
-      { notifications: rows, totalNotifications: count, currentPage: page },
+      {
+        notifications: rows,
+        totalNotifications: count,
+        totalUnreadNotifications: countUnread,
+        currentPage: page,
+      },
       httpStatus.OK,
       res
     );

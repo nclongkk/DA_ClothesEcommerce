@@ -151,7 +151,7 @@ exports.addOrder = async (req, res, next) => {
           orderId: order.id,
           userId,
           shopId,
-          status: TRANSACTION_STATUS.PENDING,
+          status: TRANSACTION_STATUS.CHARGE,
           senderPayPalMail,
         },
         { transaction: t }
@@ -444,6 +444,17 @@ exports.updateOrderStatusForShop = async (req, res, next) => {
           { transaction: t }
         );
       });
+
+      await Transaction.create(
+        {
+          orderId: order.id,
+          userId,
+          shopId,
+          status: TRANSACTION_STATUS.TRANSFER,
+          senderPayPalMail,
+        },
+        { transaction: t }
+      );
       //creat transaction via paypal
       let environment = new paypal.core.SandboxEnvironment(
         process.env.PAYPAL_CLIENT_ID,
@@ -495,12 +506,9 @@ exports.updateOrderStatusForShop = async (req, res, next) => {
       message: `Your order ${order.id} is ${order.status}`,
     })
       .then(async (data) => {
-        const count = await OrderNotification.count({
-          receiverUserId: order.userId,
-        });
         _emitter.sockets
           .in(order.userId)
-          .emit('orderStatusChanging', { order, notificaton: data, count });
+          .emit('orderStatusChanging', { order, notificaton: data });
       })
       .catch((error) => console.log(error));
     return response(order, httpStatus.OK, res);
@@ -638,8 +646,14 @@ exports.cancelOrder = async (req, res, next) => {
       }
     }
 
-    await Transaction.destroy(
-      { where: { orderId: order.id } },
+    await Transaction.create(
+      {
+        orderId: order.id,
+        userId,
+        shopId,
+        status: TRANSACTION_STATUS.REFUND,
+        senderPayPalMail,
+      },
       { transaction: t }
     );
     await order.update({ status: ORDER_STATUS.CANCELED }, { transaction: t });
@@ -651,12 +665,9 @@ exports.cancelOrder = async (req, res, next) => {
       message: `Your order ${order.id} is ${order.status}`,
     })
       .then(async (data) => {
-        const count = await OrderNotification.count({
-          receiverUserId: order.userId,
-        });
         _emitter.sockets
           .in(order.userId)
-          .emit('orderStatusChanging', { order, notificaton: data, count });
+          .emit('orderStatusChanging', { order, notificaton: data });
       })
       .catch((error) => console.log(error));
 

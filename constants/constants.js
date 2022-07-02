@@ -34,5 +34,7 @@ exports.ORDER_STATUS = {
 
 exports.TRANSACTION_STATUS = {
   PENDING: 'pending',
-  TRANSFERRED: 'transferred',
+  TRANSFER: 'transfer',
+  CHARGE: 'charge',
+  REFUND: 'refund',
 };
