@@ -155,9 +155,6 @@ exports.getTransactions = async (req, res, next) => {
           model: Transaction,
           as: 'transaction',
           attributes: ['id', 'status', 'createdAt'],
-          where: {
-            status: TRANSACTION_STATUS.TRANSFERRED,
-          },
           required: true,
         },
         {
