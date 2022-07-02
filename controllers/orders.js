@@ -138,25 +138,25 @@ exports.addOrder = async (req, res, next) => {
       )
     );
 
-    if (isPurchased) {
-      // query shop to get paypal account
-      const shop = await Shop.findOne({
-        where: { id: shopId },
-        attributes: ['paypalMail'],
-      });
+    // if (isPurchased) {
+    //   // query shop to get paypal account
+    //   const shop = await Shop.findOne({
+    //     where: { id: shopId },
+    //     attributes: ['paypalMail'],
+    //   });
 
-      //update transaction collection
-      const transaction = await Transaction.create(
-        {
-          orderId: order.id,
-          userId,
-          shopId,
-          status: TRANSACTION_STATUS.CHARGE,
-          senderPayPalMail,
-        },
-        { transaction: t }
-      );
-    }
+    // }
+    //update transaction collection
+    const transaction = await Transaction.create(
+      {
+        orderId: order.id,
+        userId,
+        shopId,
+        status: TRANSACTION_STATUS.CHARGE,
+        senderPayPalMail,
+      },
+      { transaction: t }
+    );
 
     await t.commit();
     return response(order, httpStatus.OK, res);
@@ -445,7 +445,6 @@ exports.updateOrderStatusForShop = async (req, res, next) => {
         );
       });
 
-      await order.update({ status });
       //creat transaction via paypal
       let environment = new paypal.core.SandboxEnvironment(
         process.env.PAYPAL_CLIENT_ID,
@@ -485,6 +484,7 @@ exports.updateOrderStatusForShop = async (req, res, next) => {
         throw new customError('error.paypal_error', httpStatus.BAD_REQUEST);
       }
     }
+    await order.update({ status });
 
     await t.commit();
     await Transaction.create({
@@ -606,6 +606,7 @@ exports.cancelOrder = async (req, res, next) => {
 
     const transaction = await Transaction.findOne({ where: { orderId } });
     if (transaction) {
+      console.log(1);
       await Transaction.create({
         orderId: order.id,
         userId: order.userId,
@@ -659,7 +660,7 @@ exports.cancelOrder = async (req, res, next) => {
       .then(async (data) => {
         _emitter.sockets
           .in(order.userId)
-          .emit('orderStatusChanging', { order, notificaton: data });
+          .emit('orderStatusChanging', { order, notification: data });
       })
       .catch((error) => console.log(error));
 

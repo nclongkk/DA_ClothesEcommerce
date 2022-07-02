@@ -138,37 +138,29 @@ exports.getTransactions = async (req, res, next) => {
     let { page, limit } = req.query;
     limit = parseInt(limit, 10);
     const startIndex = (page - 1) * limit;
-    const { rows, count } = await Order.findAndCountAll({
+    const { rows, count } = await Transaction.findAndCountAll({
       limit,
       offset: startIndex,
       order: [['createdAt', 'DESC']],
-      attributes: [
-        'id',
-        'userId',
-        'shopId',
-        'amount',
-        'createdAt',
-        'serviceFeePercentage',
-      ],
       include: [
-        {
-          model: Transaction,
-          as: 'transaction',
-          attributes: ['id', 'status', 'createdAt'],
-          required: true,
-        },
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'name', 'avatar'],
+          attributes: ['id', 'avatar', 'name'],
         },
         {
           model: Shop,
           as: 'shop',
           attributes: ['id', 'name', 'avatar'],
         },
+        {
+          model: Order,
+          as: 'order',
+          attributes: ['id', 'status', 'serviceFeePercentage', 'amount'],
+        },
       ],
     });
+
     return response(
       { transactions: rows, totalTransactions: count, currentPage: page },
       httpStatus.OK,
